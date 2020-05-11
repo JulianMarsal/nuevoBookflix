@@ -9,6 +9,33 @@ from django.http import HttpResponse
 
 from .forms import RegistrationForm
 from .models import *
+from django.contrib.auth.forms import UserCreationForm
+
+
+
+def register(request):
+    # Creamos el formulario de autenticación vacío
+    form = UserCreationForm()
+    if request.method == "POST":
+        # Añadimos los datos recibidos al formulario
+        form = UserCreationForm(data=request.POST)
+        # Si el formulario es válido...
+        if form.is_valid():
+
+            # Creamos la nueva cuenta de usuario
+            user = form.save()
+
+            # Si el usuario se crea correctamente 
+            if user is not None:
+                # Hacemos el login manualmente
+                do_login(request, user)
+                # Y le redireccionamos a la portada
+                return redirect('/')
+
+    # Si llegamos al final renderizamos el formulario
+    return render(request, "register_page.html", {'form': form})
+
+
 
 def welcome(request):
     # Si estamos identificados devolvemos la portada
@@ -16,6 +43,10 @@ def welcome(request):
         return render(request, "bookflix/welcome.html")
     # En otro caso redireccionamos al login
     return redirect('/login')
+
+#def register(request):
+    documento=render(request,"register_page.html")
+    return (documento)
 
 def register_page(request):
     if request.method == 'POST':
