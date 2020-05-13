@@ -4,38 +4,36 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as do_login
 from django.contrib.auth import logout as do_logout
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.http import HttpResponse
-
+from django.views.decorators.csrf import csrf_protect
 from .forms import RegistrationForm
 from .models import *
 from django.contrib.auth.forms import UserCreationForm
 
 
 
-def register(request):
-    # Creamos el formulario de autenticación vacío
-    form = UserCreationForm()
-    if request.method == "POST":
-        # Añadimos los datos recibidos al formulario
-        form = UserCreationForm(data=request.POST)
+def register_page(request):
+    context = {}
+    if request.POST:
+        form = RegistrationForm(request.POST)
         # Si el formulario es válido...
         if form.is_valid():
 
             # Creamos la nueva cuenta de usuario
-            user = form.save()
-
-            # Si el usuario se crea correctamente 
-            if user is not None:
-                # Hacemos el login manualmente
-                do_login(request, user)
-                # Y le redireccionamos a la portada
-                return redirect('/')
-
-    # Si llegamos al final renderizamos el formulario
-    return render(request, "register_page.html", {'form': form})
-
-
+            form.save()
+            email= form.cleaned_data.get('email')
+            raw_password= form.cleaned_data.get('password1')
+            account = authenticate(email=email, password=raw_password)
+            
+            do_login(request, account )
+            return redirect('/login')
+        else:
+            context["user_creation_form"]=form
+    else:
+        form=RegistrationForm()
+        context["user_creation_form"]=form
+    return render(request, 'bookflix/register_page.html', context)
 
 def welcome(request):
     # Si estamos identificados devolvemos la portada
@@ -44,11 +42,9 @@ def welcome(request):
     # En otro caso redireccionamos al login
     return redirect('/login')
 
-#def register(request):
-    documento=render(request,"register_page.html")
-    return (documento)
 
-def register_page(request):
+
+"""def register_page(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
     if form.is_valid():
@@ -59,9 +55,9 @@ def register_page(request):
         form = RegistrationForm()
 
         args = {'form': form, }
-        return render(request, 'register_page.html', args)
+        return render(request, 'register_page.html', args)"""
 
-def login(request):
+def login_propio(request):
     # Creamos el formulario de autenticación vacío
     form = AuthenticationForm()
     if request.method == "POST":

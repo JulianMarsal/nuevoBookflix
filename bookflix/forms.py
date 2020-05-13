@@ -1,20 +1,22 @@
 from django import forms
 from .models import Account
-
+from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.forms import UserCreationForm
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
+    
 
     class Meta:
         model = Account
-        fields = {
+        fields = (  
             'username',
             'email',
             'password1',
             'password2',
-        }
-
+            
+        )
+"""
     def save(self, commit=True):
         user = super(RegistrationForm, self).save(commit=False)
         user.email = self.cleaned_data['email']
@@ -23,4 +25,4 @@ class RegistrationForm(UserCreationForm):
             user.save()
         return user
 
-
+"""

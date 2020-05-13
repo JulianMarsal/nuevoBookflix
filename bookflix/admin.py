@@ -49,7 +49,8 @@ admin.site.register(UserSolicitud)
 
 admin.site.register(StateOfBook)
 
-admin.site.register(Publication)
+admin.site.register(ExpirationDatesBillboard)
+admin.site.register(UpDatesBillboard)
 admin.site.register(Book)
 admin.site.register(BookByChapter)
 admin.site.register(Chapter)

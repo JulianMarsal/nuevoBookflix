@@ -83,16 +83,19 @@ class MyAccountManager(BaseUserManager):
         user.save(using=self.db)
         return user
 
+    """ def get_by_natural_key(self, username):
+       return self.get(username=username)"""
+
 
 
 #Account
 class Account(AbstractBaseUser):
 
     #Valores para los diferentes tipos de cuenta
-    free='1'
-    normal='2'
-    premium='4'
-    admin = '9'
+    free='free'
+    normal='normal'
+    premium='premium'
+    admin = 'admin'
     AC_CHOICES= (
         (free, 'free'),
         (normal, 'normal'),
@@ -108,7 +111,7 @@ class Account(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-    plan = models.CharField( max_length=2, choices=AC_CHOICES, default=free)
+    plan = models.CharField( max_length=8, choices=AC_CHOICES, default=free)
     date_start_plan = models.DateField(blank=True, null=True, auto_now=False, auto_now_add=False)
     time_pay = models.IntegerField(default=0)
     objects = MyAccountManager()
@@ -145,6 +148,7 @@ class CreditCards(models.Model):
 
 class Profile(models.Model):
     account= models.ForeignKey(Account, on_delete=models.CASCADE)
+    is_active_now= models.BooleanField(default=False)
     name= models.CharField( max_length=50)
     pleasures_gender = models.ManyToManyField(Gender, blank=True, null=True)
     pleasures_author = models.ManyToManyField(Author, blank=True, null=True)
@@ -158,32 +162,18 @@ class Profile(models.Model):
     def __str__(self):
         return self.name  
 
-      
-
-
-"""Se guardan la clase publicación y sus hijos, libro, libro por capítulo, billboard, chapter """
-
-"-------Publication-------"
-class Publication(models.Model):
+"-------Book-------"
+class Book(models.Model):
     title = models.CharField( max_length=50)
     description = models.TextField()
     on_normal = models.BooleanField(default=False)
     on_premium = models.BooleanField(default=False)
-
-    def publish(self):
-        self.save()
-
-    def __str__(self):
-        return self.title
-
-"-------Book-------"
-class Book(models.Model):
     isbn = models.IntegerField(primary_key=True)
     author= models.ForeignKey(Author, on_delete=models.CASCADE)
     genders = models.ManyToManyField(Gender)
     editorial = models.ForeignKey(Editorial, on_delete=models.CASCADE)
     url = models.URLField( max_length=200, blank=True, null=True)
-    publication= models.OneToOneField(Publication, on_delete=models.CASCADE)
+
 
     def publish(self):
         self.save()
@@ -200,6 +190,8 @@ class BookByChapter(models.Model):
 
 "-------Billboard-------"
 class Billboard(models.Model):
+    title = models.CharField( max_length=50, )
+    description = models.TextField()
     author = models.ForeignKey(Account, on_delete=models.CASCADE)
     video=  models.URLField(   max_length=255, blank=True, null=True)
 
@@ -222,9 +214,9 @@ class Chapter(models.Model):
 
 class StateOfBook(models.Model):
 
-    reading='10'
-    future_reading='20'
-    finished='30'
+    reading='reading'
+    future_reading='future_reading'
+    finished='finished'
     AC_CHOICES= (
         (reading, 'reading'),
         (future_reading, 'future_reading'),
@@ -232,8 +224,8 @@ class StateOfBook(models.Model):
     )
 
     date= models.DateField(default=timezone.now)
-    state = models.CharField( max_length=2, choices=AC_CHOICES, default=finished)
-    book = models.ForeignKey(Publication, on_delete=models.CASCADE)
+    state = models.CharField( max_length=16, choices=AC_CHOICES, default=finished)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
     class Meta:
@@ -251,7 +243,7 @@ class Comment(models.Model):
     is_a_spoiler = models.BooleanField(default=False)
     description = models.TextField()
     profile= models.ForeignKey(Profile, on_delete=models.CASCADE)
-    publication = models.ForeignKey(Publication, on_delete=models.CASCADE)    
+    publication = models.ForeignKey(Book, on_delete=models.CASCADE)    
 
 
     def publish(self):
@@ -261,11 +253,11 @@ class Comment(models.Model):
 class Like(models.Model):
     
     is_like = models.BooleanField(default = False)
-    publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
     author = models.ForeignKey(Profile, on_delete=models.CASCADE)
     
     class Meta:
-        unique_together = ('author', 'publication')
+        unique_together = ('author', 'book')
 
     def publish(self):
         self.save()
@@ -288,7 +280,7 @@ class LikeComment(models.Model):
 #ExpirationDates
 class ExpirationDates(models.Model):
 
-    publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
     expiration_normal= models.DateField(blank=True, null=True)
     expiration_premium= models.DateField(blank=True, null=True)
 
@@ -298,13 +290,33 @@ class ExpirationDates(models.Model):
 #UpDates
 class   UpDates(models.Model):
     
-    publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
     up_normal= models.DateField(blank=True, null=True)
     up_premium= models.DateField(blank=True, null=True)
 
     def publish(self):
         self.save()
 
+
+#ExpirationDates
+class ExpirationDatesBillboard(models.Model):
+
+    publication = models.ForeignKey(Billboard, on_delete=models.CASCADE)
+    expiration_normal= models.DateField(blank=True, null=True)
+    expiration_premium= models.DateField(blank=True, null=True)
+
+    def publish(self):
+        self.save()
+
+#UpDates
+class   UpDatesBillboard(models.Model):
+    
+    publication = models.ForeignKey(Billboard, on_delete=models.CASCADE)
+    up_normal= models.DateField(blank=True, null=True)
+    up_premium= models.DateField(blank=True, null=True)
+
+    def publish(self):
+        self.save()
 
 #UserSolicitud
 
@@ -355,7 +367,7 @@ class UserSolicitud(models.Model):
 
 class CounterStates(models.Model):
 
-    publication = models.ForeignKey(Publication, on_delete=models.CASCADE) 
+    publication = models.ForeignKey(Book, on_delete=models.CASCADE) 
     date_start = models.DateField( )
     date_start = models.DateField( )
     cant_reading = models.IntegerField(default=0)
