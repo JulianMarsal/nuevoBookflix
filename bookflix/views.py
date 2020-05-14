@@ -10,6 +10,8 @@ from django.views.decorators.csrf import csrf_protect
 from .forms import RegistrationForm, RegistroTarjeta
 from .models import *
 from django.contrib.auth.forms import UserCreationForm
+from django import shortcuts
+from bookflix.models import Billboard, Profile
 
 
 
@@ -44,11 +46,33 @@ def register_page(request):
     return render(request, 'bookflix/register_page.html', context)
 
 def welcome(request):
-    # Si estamos identificados devolvemos la portada
-    if request.user.is_authenticated:
-        return render(request, "bookflix/welcome.html")
-    # En otro caso redireccionamos al login
-    return redirect('/login')
+    perrfil=Account.objects.filter(username="julian")  #Retocar este parámetro para que agarre la variable del perfil actual y se se puede no de una puta lista
+    perfil={"perfil":perrfil[0]} 
+    return render(request, "bookflix/welcome.html", perfil)
+
+def barra(request):
+    return render(request,"bookflix/barra.html", perfil)
+
+
+def base(request):
+    return render(request, "bookflix/base.html")
+
+def perfil(request):
+    publicacion=Account.objects.filter(username="julian")  #Retocar este parámetro para que agarre la variable del perfil actual y se se puede no de una puta lista
+    perfil={"perfil":publicacion[0]}
+    return render(request, "bookflix/perfil.html",perfil)
+
+def publicaciones(request):
+    publicacion=Billboard.objects.all()
+    contexto={"publicaciones":publicacion}
+    return render(request, "bookflix/publicaciones.html",contexto)
+
+
+def publicacion(request):
+    return render(request, "bookflix/publicacion.html")
+
+
+
 
 
 
@@ -95,3 +119,4 @@ def logout(request):
     do_logout(request)
     # Redireccionamos a la portada
     return redirect('/')
+
