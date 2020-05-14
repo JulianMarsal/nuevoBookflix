@@ -1,0 +1,32 @@
+<html>
+    <style>
+        #publicaciones{
+            margin: 0;
+            padding:70px;
+            list-style: none;
+            text-transform: uppercase;
+        }
+        #publicaciones li{
+            display: inline;
+            margin-left: 15%;
+        }
+    </style>
+<body>
+ 
+{% include "bookflix/barra.html" %}
+
+<ul id="publicaciones">
+
+    {% if publicaciones %}
+    {% for publicacion in publicaciones %}
+    <li> <a href="http://127.0.0.1:8000/publicacion">{{publicacion.titulo}}</a> </li> 
+    {% endfor %}
+    {% else %}
+    <p>No hay publicaciones disponibles</p>
+    {% endif %}
+
+</ul>
+
+
+</body>
+</html>
