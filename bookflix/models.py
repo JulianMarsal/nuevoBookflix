@@ -21,7 +21,7 @@ class Author(models.Model):
     def publish(self):
         self.save()
 
-    def ret(sel):
+    def ret(self):
         return self.name 
     def __str__(self):
         return self.name
@@ -123,6 +123,9 @@ class Account(AbstractBaseUser):
     def __str__(self):
         return self.email
 
+    def nombre(self):
+        return self.username
+
     def has_perm (self, perm, obj=None):
         return self.is_admin
     
@@ -198,6 +201,16 @@ class Billboard(models.Model):
 
     def publish(self):
         self.save()
+    def titulo(self):
+        return '%s' % (self.title)
+    def description(self):
+        return '%s' % (self.description)
+    def author(self):
+        return '%s' % (self.author)
+    def video(self):
+        return '%s' % (self.video)
+    def __str__(self):
+        return 'Título:%s   Descripción: %s   Author:%s   Link del video: %s ' % (self.title, self.description, self.author, self.video)
 
 "-------Chapter-------"
 class Chapter(models.Model):
