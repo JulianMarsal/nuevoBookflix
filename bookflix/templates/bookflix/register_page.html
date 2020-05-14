@@ -12,6 +12,17 @@
             {% endfor %}
         </p>
     {% endfor %}
+    {% for field in creacion_tarjeta %}
+    <p>
+        {{field.label_tag}}
+        {{field}}
+
+        {%for error in field.errors%}
+            <p style="color: red;">{{error}} </p>
+        {% endfor %}
+    </p>
+    {% endfor %}    
+
     <button type="submit">Registrar</button>
 </form>
 
