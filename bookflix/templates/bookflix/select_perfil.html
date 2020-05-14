@@ -1,0 +1,12 @@
+<h1 style="color: black;">
+    Bienvenido <b>{{request.user.username}}</b>
+</h1>
+
+{% for perfil in perfiles %}
+    <p>
+        perfil: {{ perfil.name }}    
+    </p>
+{% endfor %}
+
+
+<a href="/">ir al home</a>

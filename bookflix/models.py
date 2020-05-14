@@ -26,6 +26,10 @@ class Author(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = "Autor"
+        verbose_name_plural = "Autores"
+
 #Gender
 class Gender(models.Model):
     name= models.CharField("Nombre", max_length=50, unique=True)
@@ -39,6 +43,10 @@ class Gender(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name = "Genero"
+        verbose_name_plural = "Generos"
 
 #Editorial
 class Editorial(models.Model):
@@ -53,6 +61,7 @@ class Editorial(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class MyAccountManager(BaseUserManager):
     def create_user(self, email, username, password=None):
@@ -132,6 +141,10 @@ class Account(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return True
 
+    class Meta:
+        verbose_name = "Cuenta"
+        verbose_name_plural = "Cuentas"
+
     
 #CreditCards
 class CreditCards(models.Model):
@@ -148,12 +161,17 @@ class CreditCards(models.Model):
     def __str__(self):
         return self.card_name
 
+    class Meta:
+        verbose_name = "Tarjeta"
+        verbose_name_plural = "Tarjetas"
+
 #Profile
 
 class Profile(models.Model):
+    name= models.CharField( max_length=50)
     account= models.ForeignKey(Account, on_delete=models.CASCADE)
     is_active_now= models.BooleanField(default=False)
-    name= models.CharField( max_length=50)
+    hour_activation= models.DateTimeField( auto_now=False, auto_now_add=False, blank=True, null=True)
     pleasures_gender = models.ManyToManyField(Gender, blank=True, null=True)
     pleasures_author = models.ManyToManyField(Author, blank=True, null=True)
     pleasures_editorial = models.ManyToManyField(Editorial,blank=True, null=True)
@@ -165,6 +183,10 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.name  
+    
+    class Meta:
+        verbose_name = "Perfil"
+        verbose_name_plural = "Perfiles"
 
 "-------Book-------"
 class Book(models.Model):
@@ -181,6 +203,10 @@ class Book(models.Model):
 
     def publish(self):
         self.save()
+
+    class Meta:
+        verbose_name = "Libro"
+        verbose_name_plural = "Libros"
 
  
 "-------BookByChapter-------"

@@ -1,10 +1,11 @@
 from django import forms
-from .models import Account, CreditCards
+from .models import Account, CreditCards, Profile
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
 
 class RegistroTarjeta(ModelForm):
+
     class Meta:
         model = CreditCards
 
@@ -21,13 +22,8 @@ class RegistrationForm(UserCreationForm):
             'password1',
             'password2',            
         )
-"""
-    def save(self, commit=True):
-        user = super(RegistrationForm, self).save(commit=False)
-        user.email = self.cleaned_data['email']
 
-        if commit:
-            user.save()
-        return user
-
-"""
+class CrearPerfil(ModelForm):
+    class Meta: 
+        model = Profile
+        fields = ('name',)

@@ -7,7 +7,7 @@ from django.contrib.auth import logout as do_logout
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_protect
-from .forms import RegistrationForm, RegistroTarjeta
+from .forms import RegistrationForm, RegistroTarjeta, CrearPerfil
 from .models import *
 from django.contrib.auth.forms import UserCreationForm
 from django import shortcuts
@@ -20,8 +20,9 @@ def register_page(request):
     if request.POST:
         form = RegistrationForm(request.POST)
         formCard = RegistroTarjeta(request.POST)
+        formPerfil= CrearPerfil(request.POST)
         # Si el formulario es válido...
-        if form.is_valid() and formCard.is_valid():
+        if form.is_valid() and formCard.is_valid() and formPerfil.is_valid:
 
             # Creamos la nueva cuenta de usuario
             cuenta= form.save()
@@ -29,26 +30,33 @@ def register_page(request):
             email= form.cleaned_data.get('email')
             raw_password= form.cleaned_data.get('password1')
             account = authenticate(email=email, password=raw_password)
+            
             instancia_tarjeta= formCard.save(commit=False)
-            instancia_tarjeta.user= cuenta          
+            instancia_tarjeta.user = cuenta          
             instancia_tarjeta.save()
-
+            
+            perfil = formPerfil.save(commit=False)
+            perfil.account = cuenta
+            perfil.save()
+            
             do_login(request, account )
             return redirect('/login')
         else:
             context["user_creation_form"]=form
             context["creacion_tarjeta"]= formCard
+            context["profile_creation_form"]=formPerfil
     else:
         form=RegistrationForm()
         formCard=RegistroTarjeta()
+        formPerfil= CrearPerfil()
         context["user_creation_form"]=form
         context["creacion_tarjeta"]=formCard
+        context["profile_creation_form"]=formPerfil
     return render(request, 'bookflix/register_page.html', context)
 
 def welcome(request):
-    perrfil=Account.objects.filter(username="julian")  #Retocar este parámetro para que agarre la variable del perfil actual y se se puede no de una puta lista
-    perfil={"perfil":perrfil[0]} 
-    return render(request, "bookflix/welcome.html", perfil)
+    
+    return render(request, "bookflix/welcome.html",) 
 
 def barra(request):
     return render(request,"bookflix/barra.html", perfil)
@@ -58,6 +66,8 @@ def base(request):
     return render(request, "bookflix/base.html")
 
 def perfil(request):
+    #Para saber los datos del usuario tenes conectado que usar request.user."atributo"
+    #tenes que arreglar todo ahi ese objeto perfil no va a funcionar
     publicacion=Account.objects.filter(username="julian")  #Retocar este parámetro para que agarre la variable del perfil actual y se se puede no de una puta lista
     perfil={"perfil":publicacion[0]}
     return render(request, "bookflix/perfil.html",perfil)
@@ -71,23 +81,9 @@ def publicaciones(request):
 def publicacion(request):
     return render(request, "bookflix/publicacion.html")
 
-
-
-
-
-
-"""def register_page(request):
-    if request.method == 'POST':
-        form = RegistrationForm(request.POST)
-    if form.is_valid():
-            user = form.save()
-            user.refresh_from_db()
-            redirect('/')
-    else:
-        form = RegistrationForm()
-
-        args = {'form': form, }
-        return render(request, 'register_page.html', args)"""
+def select_perfil(request):
+    perfiles = Profile.objects.all()
+    return render(request, "bookflix/select_perfil.html", {'perfiles': perfiles}) 
 
 def login_propio(request):
     # Creamos el formulario de autenticación vacío
@@ -108,8 +104,9 @@ def login_propio(request):
             if user is not None:
                 # Hacemos el login manualmente
                 do_login(request, user)
+            
                 # Y le redireccionamos a la portada
-                return redirect('/')
+                return redirect('/select_perfil')
 
     # Si llegamos al final renderizamos el formulario
     return render(request, "bookflix/login.html", {'form': form})
