@@ -11,7 +11,7 @@ from .forms import RegistrationForm, RegistroTarjeta, CrearPerfil
 from .models import *
 from django.contrib.auth.forms import UserCreationForm
 from django import shortcuts
-from bookflix.models import Billboard, Profile
+from bookflix.models import Billboard, Profile, CreditCards, Account
 
 
 
@@ -83,7 +83,13 @@ def publicacion(request):
 
 def select_perfil(request):
     perfiles = Profile.objects.all()
-    return render(request, "bookflix/select_perfil.html", {'perfiles': perfiles}) 
+    cuentaActualEmail = perfiles[0].account
+    perfilActual = Account.objects.filter(email=cuentaActualEmail)[0]
+    
+
+    cuentaActual = request.user
+    tarjetaActual = CreditCards.objects.filter(user_id=cuentaActual)[0]
+    return render(request, "bookflix/select_perfil.html", {'perfiles': perfiles, "tarjetaActual": tarjetaActual, "perfilActual":perfilActual})
 
 def login_propio(request):
     # Creamos el formulario de autenticación vacío
@@ -116,4 +122,24 @@ def logout(request):
     do_logout(request)
     # Redireccionamos a la portada
     return redirect('/')
+
+
+
+
+
+# Desde acá van todos los "cambiar algo"
+
+def cambiar_mail(request):
+
+    return render(request, "bookflix/cambiar_mail.html")
+
+
+def cambiar_tarjeta(request):
+
+    return render(request, "bookflix/cambiar_tarjeta.html")
+
+
+def cambiar_contraseña(request):
+
+    return render(request, "bookflix/cambiar_contraseña.html")  
 
