@@ -1,0 +1,27 @@
+<html>
+    
+    <body>
+        {% include "bookflix/barra.html" %}
+        <h2>Cambiar email </h2>
+        <form method="post">
+            
+            {% csrf_token %}
+            {%for field in cambio_mail %}
+                {{field.label_tag}}
+                {{field}}
+            {% endfor %}
+
+            {%for error in cambio_mail.errors %}
+                <p style="color:tomato", >{{error}} </p>
+            {% endfor %}
+            
+            {% if cambio_mail.non_field_errors %}
+                <div style="color:yellow">
+                    <p>{{cambio_mail.non_field_errors}} </p>
+                </div>
+            {% endif %}
+            <button type="submit">Save changes</button>
+          </form>
+        
+    </body>
+</html>

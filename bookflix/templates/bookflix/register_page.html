@@ -12,6 +12,7 @@
     {% endfor %}
         </p>
     {% endfor %}
+    <p>Información de su tarjeta</p>
     {% for field in creacion_tarjeta %}
     <p>
         {{field.label_tag}}
@@ -22,11 +23,7 @@
         {% endfor %}
     </p>
     {% endfor %}    
-    <p> Seleccione nombre de su perfil</p>
-    {% for field in profile_creation_form %}
-        {{field.label_tag}}
-        {{field}}
-    {% endfor %}
+
     <p></p>
     <button type="submit">Registrar</button>
 </form>

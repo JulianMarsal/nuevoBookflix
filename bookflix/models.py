@@ -14,6 +14,7 @@ from django.utils import timezone
 class Author(models.Model):
     name= models.CharField("Nombre", max_length=50)
     last_name = models.CharField( max_length=50) 
+    image= models.ImageField( upload_to='bookflix/static/autores', height_field=None, width_field=None, max_length=None, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     created_date = models.DateTimeField(default=timezone.now)
 
@@ -192,12 +193,14 @@ class Profile(models.Model):
 class Book(models.Model):
     title = models.CharField( max_length=50)
     description = models.TextField()
-    on_normal = models.BooleanField(default=False)
-    on_premium = models.BooleanField(default=False)
+    image= models.ImageField( upload_to='bookflix/static/portadas_libros', height_field=None, width_field=None, max_length=None, blank=True, null=True)
     isbn = models.IntegerField(primary_key=True)
     author= models.ForeignKey(Author, on_delete=models.CASCADE)
     genders = models.ManyToManyField(Gender)
     editorial = models.ForeignKey(Editorial, on_delete=models.CASCADE)
+    mostrar_en_home= models.BooleanField(default=False)
+    on_normal = models.BooleanField(default=False)
+    on_premium = models.BooleanField(default=False)
     url = models.URLField( max_length=200, blank=True, null=True)
 
 
@@ -207,6 +210,9 @@ class Book(models.Model):
     class Meta:
         verbose_name = "Libro"
         verbose_name_plural = "Libros"
+
+    def __str__(self):
+        return self.title
 
  
 "-------BookByChapter-------"

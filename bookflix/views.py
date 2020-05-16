@@ -7,7 +7,7 @@ from django.contrib.auth import logout as do_logout
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_protect
-from .forms import RegistrationForm, RegistroTarjeta, CrearPerfil
+from .forms import RegistrationForm, RegistroTarjeta, CrearPerfil, MailChange
 from .models import *
 from django.contrib.auth.forms import UserCreationForm
 from django import shortcuts
@@ -23,9 +23,9 @@ def register_page(request):
     if request.POST:
         form = RegistrationForm(request.POST)
         formCard = RegistroTarjeta(request.POST)
-        formPerfil= CrearPerfil(request.POST)
+        #formPerfil= CrearPerfil(request.POST)
         # Si el formulario es válido...
-        if form.is_valid() and formCard.is_valid() and formPerfil.is_valid:
+        if form.is_valid() and formCard.is_valid():  # and formPerfil.is_valid:
 
             # Creamos la nueva cuenta de usuario
             cuenta= form.save()
@@ -38,16 +38,16 @@ def register_page(request):
             instancia_tarjeta.user = cuenta          
             instancia_tarjeta.save()
             
-            perfil = formPerfil.save(commit=False)
-            perfil.account = cuenta
-            perfil.save()
+            #perfil = formPerfil.save(commit=False)
+            #perfil.account = cuenta
+            #perfil.save()
             
             do_login(request, account )
             return redirect('/login')
         else:
             context["user_creation_form"]=form
             context["creacion_tarjeta"]= formCard
-            context["profile_creation_form"]=formPerfil
+            #context["profile_creation_form"]=formPerfil
     else:
         form=RegistrationForm()
         formCard=RegistroTarjeta()
@@ -163,3 +163,33 @@ def cambiar_tarjeta(request):
     else:
         form=RegistroTarjeta()
     return render(request, "bookflix/cambiar_tarjeta.html", {'form': form})
+
+def cambiar_email(request):
+    context={}
+    if request.POST:
+        form= MailChange(request.POST, instance= request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('/perfil')
+    else:
+        form= MailChange(
+            initial={
+                "email": request.user.email,
+            }
+        )
+    context["cambio_mail"]= form 
+    return render(request, "bookflix/cambiar_email.html", context)
+
+def agregarPerfil(request):
+    context={}
+    if request.POST:
+        form= CrearPerfil(request.POST)
+        if form.is_valid():
+            perfil= form.save(commit=False)
+            perfil.account = request.user
+            perfil.save()
+            return redirect ('/seleccionarPerfil')
+    else:
+        form=CrearPerfil()
+        context["profile_creation_form"]=formPerfil
+    return render(request, 'bookflix/register_page.html', context)
