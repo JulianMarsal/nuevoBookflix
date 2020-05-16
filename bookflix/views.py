@@ -80,8 +80,9 @@ def publicaciones(request):
     return render(request, "bookflix/publicaciones.html",{'publicaciones':publicacion})
 
 
-def publicacion(request):
-    return render(request, "bookflix/publicacion.html")
+def publicacion(request, titulo):
+    publicacion=Billboard.objects.get(title=titulo)
+    return render(request, "bookflix/publicacion.html",{"publicacion":publicacion})
 
 def select_perfil(request):
     perfiles = Profile.objects.filter(account = request.user)
@@ -119,7 +120,6 @@ def logout(request):
     do_logout(request)
     # Redireccionamos a la portada
     return redirect('/')
-
 
 
 
