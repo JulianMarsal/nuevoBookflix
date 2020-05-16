@@ -19,7 +19,7 @@
 
     {% if publicaciones %}
     {% for publicacion in publicaciones %}
-    <li> <a href="/publicacion">{{publicacion.title}}</a> </li> 
+    <li> <a href="/publicacion/{{publicacion.title}}">{{publicacion.title}}</a> </li> 
     {% endfor %}
     {% else %}
     <p>No hay publicaciones disponibles</p>
