@@ -221,22 +221,20 @@ class BookByChapter(models.Model):
 "-------Billboard-------"
 class Billboard(models.Model):
     title = models.CharField( max_length=50, )
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     author = models.ForeignKey(Account, on_delete=models.CASCADE)
-    video=  models.URLField(   max_length=255, blank=True, null=True)
+    video=  models.URLField(  max_length=255, blank=True, null=True)
 
     def publish(self):
         self.save()
-    def titulo(self):
-        return '%s' % (self.title)
-    def description(self):
-        return '%s' % (self.description)
-    def author(self):
-        return '%s' % (self.author)
-    def video(self):
-        return '%s' % (self.video)
+
     def __str__(self):
-        return 'Título:%s   Descripción: %s   Author:%s   Link del video: %s ' % (self.title, self.description, self.author, self.video)
+        return self.title
+
+    class Meta:
+        verbose_name = "Publicación"
+        verbose_name_plural = "Publicaciones"
+
 
 "-------Chapter-------"
 class Chapter(models.Model):

@@ -12,6 +12,9 @@ from .models import *
 from django.contrib.auth.forms import UserCreationForm
 from django import shortcuts
 from bookflix.models import Billboard, Profile, CreditCards, Account
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 
@@ -68,28 +71,22 @@ def base(request):
 def perfil(request):
     #Para saber los datos del usuario tenes conectado que usar request.user."atributo"
     #tenes que arreglar todo ahi ese objeto perfil no va a funcionar
-    publicacion=Account.objects.filter(username="julian")  #Retocar este parámetro para que agarre la variable del perfil actual y se se puede no de una puta lista
-    perfil={"perfil":publicacion[0]}
-    return render(request, "bookflix/perfil.html",perfil)
+    tarjetaActual = CreditCards.objects.get(user =request.user)
+    return render(request, "bookflix/perfil.html",{'tarjetaActual': tarjetaActual})
 
 def publicaciones(request):
     publicacion=Billboard.objects.all()
-    contexto={"publicaciones":publicacion}
-    return render(request, "bookflix/publicaciones.html",contexto)
+    
+    return render(request, "bookflix/publicaciones.html",{'publicaciones':publicacion})
 
 
 def publicacion(request):
     return render(request, "bookflix/publicacion.html")
 
 def select_perfil(request):
-    perfiles = Profile.objects.all()
-    cuentaActualEmail = perfiles[0].account
-    perfilActual = Account.objects.filter(email=cuentaActualEmail)[0]
-    
-
-    cuentaActual = request.user
-    tarjetaActual = CreditCards.objects.filter(user_id=cuentaActual)[0]
-    return render(request, "bookflix/select_perfil.html", {'perfiles': perfiles, "tarjetaActual": tarjetaActual, "perfilActual":perfilActual})
+    perfiles = Profile.objects.filter(account = request.user)
+   
+    return render(request, "bookflix/select_perfil.html", {'perfiles': perfiles,}) #"tarjetaActual": tarjetaActual, "perfilActual":perfilActual})
 
 def login_propio(request):
     # Creamos el formulario de autenticación vacío
@@ -134,12 +131,35 @@ def cambiar_mail(request):
     return render(request, "bookflix/cambiar_mail.html")
 
 
+
+def cambiar_contrasenia(request):
+
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Su Contrasenia fue cambiada con exito')
+            return redirect('cambiar_contrasenia')
+        else:
+            messages.error(request, 'Corrija el error')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, "bookflix/cambiar_contraseña.html", {
+        'form': form
+    })
+
 def cambiar_tarjeta(request):
-
-    return render(request, "bookflix/cambiar_tarjeta.html")
-
-
-def cambiar_contraseña(request):
-
-    return render(request, "bookflix/cambiar_contraseña.html")  
-
+    
+    if request.method == 'POST':
+        form = RegistroTarjeta(request.POST)
+        if form.is_valid():
+            tarjeta = form.save(commit=False)
+            tarjetauser = CreditCards.objects.filter(user_id=request.user)
+            tarjetauser.delete()
+            tarjeta.user= request.user
+            tarjeta.save()
+            return redirect('/perfil')      
+    else:
+        form=RegistroTarjeta()
+    return render(request, "bookflix/cambiar_tarjeta.html", {'form': form})

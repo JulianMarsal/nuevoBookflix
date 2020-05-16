@@ -1,3 +1,5 @@
+{% load static %}
+
 <html>
 <head>
 <title>Barra de navegación horizontal con listas y estilos CSS</title>
@@ -26,9 +28,11 @@
    </style>
 </head>
 
-<body>
-
-
+<body style="background-color:violet;" >
+   <div align="center">
+   <img src="{% static 'bookflix.png' %}" alt="fondo" > 
+   </div>
+   
    <div id="navegador">
       <ul>
          <li><a href="http://127.0.0.1:8000/perfil">perfil</a></li>   

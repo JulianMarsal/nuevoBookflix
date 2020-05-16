@@ -19,7 +19,7 @@
 
     {% if publicaciones %}
     {% for publicacion in publicaciones %}
-    <li> <a href="http://127.0.0.1:8000/publicacion">{{publicacion.titulo}}</a> </li> 
+    <li> <a href="/publicacion">{{publicacion.title}}</a> </li> 
     {% endfor %}
     {% else %}
     <p>No hay publicaciones disponibles</p>

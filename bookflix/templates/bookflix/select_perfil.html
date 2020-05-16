@@ -4,26 +4,20 @@
 <body>
     {% include "bookflix/barra.html" %}
     <h1 style="color: black;">
-        Bienvenido <b>{{request.user.username}}</b>
+        Seleccione cual Perfil quiere ustilizar de <b>{{request.user.username}}</b>
     </h1>
 
 
 
     {% for perfil in perfiles %} 
-        {% if perfil.account == perfilActual %}
+       
             <p>
                 <a href="/">-{{ perfil.name }}</a>   
             </p>
-        {% endif %}
+   
     {% endfor %}
 
-    <p> Su mail asociado es: {{perfilActual}} </p>
-    <a href="http://127.0.0.1:8000/cambiar_mail">Cambiar Dirección de mail</a>  
-        
-    <p> Su número de tarjeta es: {{tarjetaActual.number}} </p> 
-    <a href="http://127.0.0.1:8000/cambiar_tarjeta">Cambiar Tarjeta Bancaria</a>
 
-   <a href="http://127.0.0.1:8000/cambiar_contraseña">Cambiar Contraseña</a>  
    <hr>   
     
 
