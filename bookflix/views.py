@@ -58,8 +58,9 @@ def register_page(request):
     return render(request, 'bookflix/register_page.html', context)
 
 def welcome(request):
-    
-    return render(request, "bookflix/welcome.html",) 
+    publicacion=Billboard.objects.all()
+    libros = Book.objects.all()
+    return render(request, "bookflix/welcome.html",{'publicaciones':publicacion, "libros":libros}) 
 
 def barra(request):
     return render(request,"bookflix/barra.html", perfil)
@@ -76,8 +77,8 @@ def perfil(request):
 
 def publicaciones(request):
     publicacion=Billboard.objects.all()
-    
-    return render(request, "bookflix/publicaciones.html",{'publicaciones':publicacion})
+    libros = Book.objects.all()
+    return render(request, "bookflix/publicaciones.html",{'publicaciones':publicacion, "libros":libros})
 
 
 def publicacion(request, titulo):
@@ -119,7 +120,7 @@ def logout(request):
     # Finalizamos la sesión
     do_logout(request)
     # Redireccionamos a la portada
-    return redirect('/')
+    return redirect('/login')
 
 
 
@@ -180,7 +181,7 @@ def cambiar_email(request):
     context["cambio_mail"]= form 
     return render(request, "bookflix/cambiar_email.html", context)
 
-def agregarPerfil(request):
+def crear_perfil(request):
     context={}
     if request.POST:
         form= CrearPerfil(request.POST)
@@ -188,8 +189,8 @@ def agregarPerfil(request):
             perfil= form.save(commit=False)
             perfil.account = request.user
             perfil.save()
-            return redirect ('/seleccionarPerfil')
+            return redirect ('/select_perfil')
     else:
         form=CrearPerfil()
-        context["profile_creation_form"]=formPerfil
-    return render(request, 'bookflix/register_page.html', context)
+        context["profile_creation_form"]=form
+    return render(request, 'bookflix/crear_perfil.html', context)
