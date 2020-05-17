@@ -13,5 +13,5 @@ urlpatterns = [
     path("cambiar_email/", cambiar_email, name="cambiar_email"),
     path("publicacion/<titulo>/", publicacion, name="publicacion"),
     path("publicaciones/", publicaciones, name="publicaiones"),
-  #  path('crear_perfil', crear_perfil, name='crearPerfil'),
+    path('crear_perfil/', crear_perfil, name='crear_perfil'),
 ]
