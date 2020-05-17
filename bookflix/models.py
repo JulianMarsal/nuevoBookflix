@@ -222,12 +222,17 @@ class BookByChapter(models.Model):
     
     def publish(self):
         self.save()
+    
+    class Meta:
+        verbose_name = "Libro por capítulo"
+        verbose_name_plural = "Libro por capítulos"
 
 
 "-------Billboard-------"
 class Billboard(models.Model):
     title = models.CharField( max_length=50, )
     description = models.TextField(blank=True, null=True)
+    mostrar_en_home= models.BooleanField(default=False)
     author = models.ForeignKey(Account, on_delete=models.CASCADE)
     video=  models.URLField(  max_length=255, blank=True, null=True)
 
@@ -250,6 +255,8 @@ class Chapter(models.Model):
 
     class Meta:
         unique_together = ('number', 'book',)
+        verbose_name = "Capítulo"
+        verbose_name_plural = "Capítulos"
 
     def publish(self):
         self.save()
@@ -274,6 +281,8 @@ class StateOfBook(models.Model):
 
     class Meta:
         unique_together= ('book', 'profile') 
+        verbose_name = "Estado del libro"
+        verbose_name_plural = "Estados del libro"
          
     def publish(self):
         self.save()
@@ -293,6 +302,10 @@ class Comment(models.Model):
     def publish(self):
         self.save()
 
+    class Meta:
+        verbose_name = "Comentario"
+        verbose_name_plural = "Comentarios"
+
 #Like
 class Like(models.Model):
     
@@ -306,6 +319,10 @@ class Like(models.Model):
     def publish(self):
         self.save()
 
+    class Meta:
+        verbose_name = "Me gusta"
+        verbose_name_plural = "Me gusta/s"
+
 
 
 #LikeComment
@@ -317,6 +334,8 @@ class LikeComment(models.Model):
 
     class Meta:
         unique_together = ('author', 'comment')
+        verbose_name = "Me gusta de comentario"
+        verbose_name_plural = "Me gustas/s de comentarios"
 
     def publish(self):
         self.save()
@@ -331,6 +350,10 @@ class ExpirationDates(models.Model):
     def publish(self):
         self.save()
 
+    class Meta:
+        verbose_name = "Dato de expiracion"
+        verbose_name_plural = "Datos de extiración"
+
 #UpDates
 class   UpDates(models.Model):
     
@@ -340,6 +363,10 @@ class   UpDates(models.Model):
 
     def publish(self):
         self.save()
+
+    class Meta:
+        verbose_name = "Actualización"
+        verbose_name_plural = "Actualizaciones"
 
 
 #ExpirationDates
@@ -352,6 +379,10 @@ class ExpirationDatesBillboard(models.Model):
     def publish(self):
         self.save()
 
+    class Meta:
+        verbose_name = "Dato de expiración de novedades"
+        verbose_name_plural = "Datos de expiración de novedades"
+
 #UpDates
 class   UpDatesBillboard(models.Model):
     
@@ -362,6 +393,9 @@ class   UpDatesBillboard(models.Model):
     def publish(self):
         self.save()
 
+    class Meta:
+        verbose_name = "Actualizar tabla de novedades"
+        verbose_name_plural = "Actualizaciones de tabla de novedades"
 #UserSolicitud
 
 class UserSolicitud(models.Model):
@@ -407,6 +441,10 @@ class UserSolicitud(models.Model):
     def __str__(self):
         return self.type_of_solicitud
 
+    class Meta:
+        verbose_name = "Solicitud de usuario"
+        verbose_name_plural = "Solicitudes de Usuarios"
+
 #CounterStates
 
 class CounterStates(models.Model):
@@ -421,3 +459,8 @@ class CounterStates(models.Model):
     
     def publish(self):
         self.save()
+    
+    class Meta:
+        verbose_name = "Contador de estado"
+        verbose_name_plural = "Contadores de estados"
+
