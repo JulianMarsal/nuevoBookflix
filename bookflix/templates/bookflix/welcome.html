@@ -1,4 +1,37 @@
+{% load static %}
 <html>
+    <style>
+        #publicaciones{
+            margin: 10;
+            border: 10px;
+            padding:70px;
+            list-style: none;
+            text-transform: uppercase;
+        }
+        #publicaciones li{
+            display: inline;
+            margin-left: 15%;
+            border: 10px;
+        }
+        #libros{
+            margin: 10 10 10 10;
+            border: 10px 10px 10px 10px;
+            padding:70px;
+            list-style: none;
+            text-transform: uppercase;
+        }
+        #libros li{
+            display: inline;
+            margin: 10px 10px 10px 10px;
+            border: 10px 10px 10px 10px ;
+        }
+        #libros div p{
+            display: inline;
+            margin-left: 1%;
+            border: 10px;
+        }
+
+    </style>
 <body>
     
 
@@ -9,13 +42,41 @@
 <h1 style="color: black;">
     Bienvenido <b>{{request.user.username}}</b>
 </h1>
-<ul>
-    <li>Acá mañana van a ir libros, hoy no, o bueno por ahí hoy sí porque lo estoy escribiendo hoy como si fuese mañana, lo que quiero decir es que un rato, ahora no</li>
+<ul id="publicaciones">
+
+    {% if publicaciones %}
+    {% for publicacion in publicaciones %}
+    <li> <a href="/publicacion/{{publicacion.title}}">{{publicacion.title}}</a> </li> 
+    {% endfor %}
+    {% else %}
+    <p>No hay publicaciones disponibles</p>
+    {% endif %}
+
 </ul>
-<h2>Imagen desaparecida, desaparecida, fin</h2>
+ <hr>
+ <ul id="libros">
+
+    {% if libros %}
+    {% for libro in libros %}
+       <li>
+            <div>
+                <a href="/libro/{{libro.author}}">{{libro.title}}</a>
+                <p>Autor: {{libro.author}}</p> 
+                <img src="C:/Users/Julian/Desktop/ProyectosDjango/nuevoBookflix-devs/bookflix/static/portadas_libros/B40869D0994B16D1B1175EF8C12AB069_UBZZUW9.PNG" alt="Portada">
+                <img height="10%" src="{% static 'b40869d0994b16d1b1175ef8c12ab069_oSF1j8x.png' %}" alt="fondo" >
+                <p>La url de la imagen es: {{libro.image}} </p>
+            </div>
+        </li>
+    {% endfor %}
+    {% else %}
+    <p>No hay libros dados de alta disponibles</p>
+    {% endif %}
+
+</ul>
 
 
-<a href="/login">Cerrar sesión</a>
+
+<a href="/logout">Cerrar sesión</a>
 </body>
     
 </html>
