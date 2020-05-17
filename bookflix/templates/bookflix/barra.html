@@ -29,18 +29,23 @@
 </head>
 
 <body style="background-color:violet;" >
-   <div align="center">
-   <img src="{% static 'bookflix.png' %}" alt="fondo" > 
-   </div>
+
+      <div align="center">
+    <img src="{% static 'bookflix.png' %}" alt="fondo" > 
+    </div>
    
-   <div id="navegador">
-      <ul>
-         <li><a href="/perfil">perfil</a></li>   
-         <li><a href="/login">Login</a></li>
-         <li><a href="/publicaciones">Ver Publicaciones</a></li>
-         <li><a href="/ ">Home</a></li>
-         <li> <a href="/login">Log out implementar </a></li>
-      </ul>
-   </div>
+    <div id="navegador">
+      {% if request.user.is_active %}
+         <ul>
+            <li><a href="/perfil">perfil</a></li>     
+            <li><a href="/ ">Home</a></li>
+            <li><a href="/logout">LogOut</a></li>
+         </ul>
+      {% else %}
+         <ul>
+            <li><a href="/login">Login</a></li>
+         </ul>
+      {% endif %}
+      </div> 
 </body>
 </html>
