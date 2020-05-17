@@ -1,26 +1,68 @@
 <html>
-
+    {# todo esto se puede implementar con un "select option" por lo visto #}
 
 <body>
-    {% include "bookflix/barra.html" %}
-    <h1 style="color: black;">
-        Seleccione cual Perfil quiere ustilizar de <b>{{request.user.username}}</b>
-    </h1>
-
-
-
-    {% for perfil in perfiles %} 
+    {% if request.user.is_active %}
+        {% include "bookflix/barra.html" %}
+        <h1 style="color: black; margin: 10;">
+        {% if request.user.plan == "free" %}
+            {% if perfiles|length > 0 %}
+                Seleccione cual Perfil quiere utilizar de <b>{{request.user.username}}</b>
+                {% for perfil in perfiles %} 
        
-            <p>
-                <a href="/">-{{ perfil.name }}</a>   
-            </p>
-   
-    {% endfor %}
+                    <p>
+                        <a style="margin: 10;" href="/">-{{ perfil.name }}</a>   
+                    </p>
+       
+                {% endfor %}
+            {% else %}
+                <h1>Buenas! {{request.user.username}} por favor cree un perfil</h1>
+                <a href="/crear_perfil/">CrearPerfil</a>
+            {% endif %}
+        {% elif request.user.plan == "normal" %}
+            {% if perfiles|length > 0 %}
+                Seleccione cual Perfil quiere utilizar de <b>{{request.user.username}}</b>
+                {% for perfil in perfiles %} 
 
+                    <p>
+                        <a style="margin: 10;" href="/">-{{ perfil.name }}</a>   
+                    </p>
 
-   <hr>   
-    
+                {% endfor %}
+                {% if perfiles|length < 2 %}
+                    <h1>Para crear otro perfil haga click en abajo {{request.user.username}} por favor cree un perfil</h1>
+                    <a href="/crear_perfil/">CrearPerfil</a>
+                {% endif %}
+            {% else %}
+                <h1>Buenas! {{request.user.username}} por favor cree un perfil</h1>
+                <a href="/crear_perfil/">CrearPerfil</a>    
+            {% endif %}
+        {% elif request.user.plan == "premium" %}
+            {% if perfiles|length > 0 %}
+                Seleccione cual Perfil quiere utilizar de Su cuenta premium <b>{{request.user.username}}</b>
+                {% for perfil in perfiles %} 
 
+                    <p>
+                        <a style="margin: 10;" href="/">-{{ perfil.name }}</a>   
+                    </p>
+
+                {% endfor %}
+                {% if perfiles|length < 4 %}
+                    <h2 style="margin: 10;">Para crear otro perfil haga click en abajo {{request.user.username}} por favor cree un perfil</h2>
+                    <a style="margin: 10;" href="/crear_perfil/">CrearPerfil</a>
+                {% endif %}
+            {% else %}
+                <h3>Buenas! {{request.user.username}} por favor cree un perfil</h3>
+                <a style="margin: 10;" href="/crear_perfil/">CrearPerfil</a>    
+            {% endif %}
+        
+        {% endif %}
+ 
+        
+    {% else %}       
+        <hr>   
+        <h1>Área solo para usuarios logueados</h1>
+    {% endif %}
 
 </body>
 
