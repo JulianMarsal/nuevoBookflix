@@ -1,13 +1,3 @@
-{% include "bookflix/barra.html" %}
-<h2>Iniciar sesión</h2>
-
-<form method="POST">
-    {{ form.as_p }}
-    {% csrf_token %}
-    <button type="submit">Login</button>
-</form>
-
-<hr />
 <style>
     #barra li{
     display:inline;
@@ -19,8 +9,28 @@ button{
 }
 </style>
 
+{% if request.user.is_active %}
+
+{% include "bookflix/barra.html" %}
+
+<h1>Usted ya está logueado</h1>
+
 <ul id="barra">
-    <li><a href="/register_page">Registrar usuario</a></li>
-    <li>No estas registrado? toca el link de abajo</li>
+    <li>Quiere entrar con otra cuenta? toca el link de LogOut en la barra de ariba</li>
 </ul>
 
+<hr />
+{% else %}
+
+{% include "bookflix/barra.html" %}
+
+<h2>Iniciar sesión</h2>
+
+<form method="POST">
+    {{ form.as_p }}
+    {% csrf_token %}
+    <button type="submit">Login</button>
+</form>
+<a href="/register_page">Registrarse</a>
+<hr>
+{% endif %}
