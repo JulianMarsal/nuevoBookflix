@@ -193,7 +193,7 @@ class Profile(models.Model):
 class Book(models.Model):
     title = models.CharField( max_length=50)
     description = models.TextField()
-    image= models.ImageField( upload_to='bookflix/static/portadas_libros', height_field=None, width_field=None, max_length=None, blank=True, null=True)
+    image= models.ImageField( upload_to='portadas_libros', height_field=None, width_field=None, max_length=None, blank=True, null=True)
     isbn = models.IntegerField(primary_key=True)
     author= models.ForeignKey(Author, on_delete=models.CASCADE)
     genders = models.ManyToManyField(Gender)
@@ -351,8 +351,8 @@ class ExpirationDates(models.Model):
         self.save()
 
     class Meta:
-        verbose_name = "Dato de expiracion"
-        verbose_name_plural = "Datos de extiración"
+        verbose_name = "DarDeBajaLibro"
+        verbose_name_plural = "DarDeBajaLibros"
 
 #UpDates
 class   UpDates(models.Model):
@@ -365,37 +365,36 @@ class   UpDates(models.Model):
         self.save()
 
     class Meta:
-        verbose_name = "Actualización"
-        verbose_name_plural = "Actualizaciones"
+        verbose_name = "DarDeAltaLibro"
+        verbose_name_plural = "DarDeAltaLibros"
 
 
 #ExpirationDates
 class ExpirationDatesBillboard(models.Model):
 
     publication = models.ForeignKey(Billboard, on_delete=models.CASCADE)
-    expiration_normal= models.DateField(blank=True, null=True)
-    expiration_premium= models.DateField(blank=True, null=True)
+    expiration_date= models.DateField(blank=True, null=True)
+
 
     def publish(self):
         self.save()
 
     class Meta:
-        verbose_name = "Dato de expiración de novedades"
-        verbose_name_plural = "Datos de expiración de novedades"
+        verbose_name = "DarDeBajaNovdedad"
+        verbose_name_plural = "DarDeBajaNovedades"
 
 #UpDates
 class   UpDatesBillboard(models.Model):
     
     publication = models.ForeignKey(Billboard, on_delete=models.CASCADE)
-    up_normal= models.DateField(blank=True, null=True)
-    up_premium= models.DateField(blank=True, null=True)
+    up_date= models.DateField(blank=True, null=True)
 
     def publish(self):
         self.save()
 
     class Meta:
-        verbose_name = "Actualizar tabla de novedades"
-        verbose_name_plural = "Actualizaciones de tabla de novedades"
+        verbose_name = "DarDeAltaNovedades"
+        verbose_name_plural = "DarDeAltaNovedades"
 #UserSolicitud
 
 class UserSolicitud(models.Model):
@@ -461,6 +460,6 @@ class CounterStates(models.Model):
         self.save()
     
     class Meta:
-        verbose_name = "Contador de estado"
-        verbose_name_plural = "Contadores de estados"
+        verbose_name = "Estadística de libro"
+        verbose_name_plural = "Estadísticas de libros"
 

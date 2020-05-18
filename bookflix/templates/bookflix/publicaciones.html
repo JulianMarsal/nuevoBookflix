@@ -47,22 +47,7 @@
 
 </ul>
  <hr>
- <ul id="libros">
 
-    {% if libros %}
-    {% for libro in libros %}
-       <li>
-            <div>
-                <a href="/libro/{{libro.author}}">{{libro.title}}</a>
-                <p>Autor: {{libro.author}}</p> 
-            </div>
-        </li>
-    {% endfor %}
-    {% else %}
-    <p>No hay libros dados de alta disponibles</p>
-    {% endif %}
-
-</ul>
 
 </body>
 </html>

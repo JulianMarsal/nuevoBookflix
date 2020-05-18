@@ -42,17 +42,7 @@
 <h1 style="color: black;">
     Bienvenido <b>{{request.user.username}}</b>
 </h1>
-<ul id="publicaciones">
 
-    {% if publicaciones %}
-    {% for publicacion in publicaciones %}
-    <li> <a href="/publicacion/{{publicacion.title}}">{{publicacion.title}}</a> </li> 
-    {% endfor %}
-    {% else %}
-    <p>No hay publicaciones disponibles</p>
-    {% endif %}
-
-</ul>
  <hr>
  <ul id="libros">
 
@@ -62,8 +52,8 @@
             <div>
                 <a href="/libro/{{libro.author}}">{{libro.title}}</a>
                 <p>Autor: {{libro.author}}</p> 
-                <img src="C:/Users/Julian/Desktop/ProyectosDjango/nuevoBookflix-devs/bookflix/static/portadas_libros/B40869D0994B16D1B1175EF8C12AB069_UBZZUW9.PNG" alt="Portada">
-                <img height="10%" src="{% static 'b40869d0994b16d1b1175ef8c12ab069_oSF1j8x.png' %}" alt="fondo" >
+                <!-- -->
+                <img src="{% static '{{libro.image}}' %}"  > 
                 <p>La url de la imagen es: {{libro.image}} </p>
             </div>
         </li>

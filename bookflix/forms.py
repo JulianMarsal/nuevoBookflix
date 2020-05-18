@@ -3,6 +3,7 @@ from .models import Account, CreditCards, Profile
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
+from django.forms import ValidationError
 
 class RegistroTarjeta(ModelForm):
 
@@ -41,4 +42,4 @@ class MailChange(ModelForm):
                 account= Account.objects.exclude(pk=self.instance.pk).get(email=email)
             except Account.DoesNotExist:
                 return email
-            raise form.ValidationError("el mail %s se encuentra en uso" % email)
+            raise forms.ValidationError("el mail se encuentra en uso" )

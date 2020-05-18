@@ -33,4 +33,37 @@ button{
 </form>
 <a href="/register_page">Registrarse</a>
 <hr>
+
+<ul id="publicaciones">
+    <p>publicaciones: </p>
+    {% if publicaciones %}
+    {% for publicacion in publicaciones %}
+    <li> <a href="/publicacion/{{publicacion.title}}">{{publicacion.title}}</a> </li> 
+    {% endfor %}
+    {% else %}
+    <p>No hay publicaciones disponibles</p>
+    {% endif %}
+
+</ul>
+
+<ul id="libros">
+    <p>Libros: </p>
+    {% if libros %}
+    {% for libro in libros %}
+       <li>
+            <div>
+                <a href="/libro/{{libro.author}}">{{libro.title}}</a>
+                <p>Autor: {{libro.author}}</p> 
+                <img src="" alt="Portada">
+                <!---->>
+                <img height="10%" src="{{libro.image.url}}"  alt="fondo" >
+                <p>La url de la imagen es: {{libro.image}} </p>
+            </div>
+        </li>
+    {% endfor %}
+    {% else %}
+    <p>No hay libros dados de alta disponibles</p>
+    {% endif %}
+
+</ul>
 {% endif %}

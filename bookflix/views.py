@@ -41,8 +41,7 @@ def register_page(request):
             #perfil = formPerfil.save(commit=False)
             #perfil.account = cuenta
             #perfil.save()
-            
-            do_login(request, account )
+
             return redirect('/login')
         else:
             context["user_creation_form"]=form
@@ -58,8 +57,8 @@ def register_page(request):
     return render(request, 'bookflix/register_page.html', context)
 
 def welcome(request):
-    publicacion=Billboard.objects.all()
-    libros = Book.objects.all()
+    publicacion=Billboard.objects.filter(mostrar_en_home=True)
+    libros = Book.objects.filter(mostrar_en_home=True)
     return render(request, "bookflix/welcome.html",{'publicaciones':publicacion, "libros":libros}) 
 
 def barra(request):
@@ -76,9 +75,8 @@ def perfil(request):
     return render(request, "bookflix/perfil.html",{'tarjetaActual': tarjetaActual})
 
 def publicaciones(request):
-    publicacion=Billboard.objects.all()
-    libros = Book.objects.all()
-    return render(request, "bookflix/publicaciones.html",{'publicaciones':publicacion, "libros":libros})
+    publicacion=Billboard.objects.filter(mostrar_en_home=True)
+    return render(request, "bookflix/publicaciones.html",{'publicaciones':publicacion, })
 
 
 def publicacion(request, titulo):
@@ -114,7 +112,9 @@ def login_propio(request):
                 return redirect('/select_perfil')
 
     # Si llegamos al final renderizamos el formulario
-    return render(request, "bookflix/login.html", {'form': form})
+    publicacion=Billboard.objects.filter(mostrar_en_home=True)
+    libros = Book.objects.filter(mostrar_en_home=True)
+    return render(request, "bookflix/login.html", {'form': form, 'publicaciones':publicacion, "libros":libros})
 
 def logout(request):
     # Finalizamos la sesión
@@ -127,9 +127,6 @@ def logout(request):
 
 # Desde acá van todos los "cambiar algo"
 
-def cambiar_mail(request):
-
-    return render(request, "bookflix/cambiar_mail.html")
 
 
 
