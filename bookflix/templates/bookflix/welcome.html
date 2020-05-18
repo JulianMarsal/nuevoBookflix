@@ -50,11 +50,17 @@
     {% for libro in libros %}
        <li>
             <div>
+                <img src="{% static '{{libro.image.url}}' %}"  > 
                 <a href="/libro/{{libro.author}}">{{libro.title}}</a>
-                <p>Autor: {{libro.author}}</p> 
                 <!-- -->
-                <img src="{% static '{{libro.image}}' %}"  > 
-                <p>La url de la imagen es: {{libro.image}} </p>
+                <br> 
+                <p> Autor(a): {{libro.author.name}}, {{libro.author.last_name}} </p>
+                <br>
+                <p> Género(s): {%for genero in libro.genders.all %}
+                    | {{genero.name}} |
+
+                {% endfor %}
+                </p>
             </div>
         </li>
     {% endfor %}
@@ -66,7 +72,6 @@
 
 
 
-<a href="/logout">Cerrar sesión</a>
 </body>
     
 </html>

@@ -5,22 +5,13 @@
 {% include "bookflix/barra.html" %}
 
 
-
-<h1 style="padding: 10 10 10 10; margin: 20px 20px 20px 20px; font: size 40px;;">
-    {{publicacion.title}} 
-</h1>
-<h2 style="padding: 10 10 10 10;margin: 20px;;">
-
-    <a style="font-size: 25px;" href="{{publicacion.video}}">Link Al Video!</a>
-
-</h2>
-{# <iframe width="560" height="315" src="https://www.youtube.com/embed/Ou1xhCPERss?controls=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> #}
-
-
-<h2 style="padding: 10 10 10 10;margin: 20px;">
-    Descripcion: {{publicacion.description}}
-</h2>
-
+<div align="center">
+    <h1 style="padding: 10 10 10 10; margin: 20px 20px 20px 20px; font: size 40px;;">
+       {{publicacion.title}} 
+    </h1>
+    <p style="padding: 5 5 5 5;margin: 20px;">{{publicacion.description}}</p>
+    <iframe   width="560" height="315" src="https://www.youtube.com/embed/Ou1xhCPERss?controls=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> 
+</div>
 </body>
     
 </html>

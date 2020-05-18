@@ -21,3 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('bookflix.urls')),
 ]
+
+admin.site.site_header = 'Bookflix Administración'
