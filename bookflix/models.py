@@ -13,10 +13,10 @@ from django.utils import timezone
 #Author
 class Author(models.Model):
     name= models.CharField("Nombre", max_length=50)
-    last_name = models.CharField( max_length=50) 
-    image= models.ImageField( upload_to='bookflix/static/autores', height_field=None, width_field=None, max_length=None, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    created_date = models.DateTimeField(default=timezone.now)
+    last_name = models.CharField("apellido", max_length=50) 
+    image= models.ImageField("imagen", upload_to='bookflix/static/autores', height_field=None, width_field=None, max_length=None, blank=True, null=True)
+    description = models.TextField("descripcion",blank=True, null=True)
+    created_date = models.DateTimeField("fecha de creacion", default=timezone.now)
 
 
     def publish(self):
@@ -34,8 +34,8 @@ class Author(models.Model):
 #Gender
 class Gender(models.Model):
     name= models.CharField("Nombre", max_length=50, unique=True)
-    description = models.TextField(blank=True, null=True)
-    created_date = models.DateTimeField(default=timezone.now)
+    description = models.TextField("descripcion", blank=True, null=True)
+    created_date = models.DateTimeField("fecha de creacion",default=timezone.now)
 
 
     def publish(self):
@@ -52,9 +52,9 @@ class Gender(models.Model):
 #Editorial
 class Editorial(models.Model):
     name= models.CharField("Nombre", max_length=50, unique=True)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField("descripcion",blank=True, null=True)
     mail = models.EmailField( max_length=254, blank=True, null=True)
-    created_date = models.DateTimeField(default=timezone.now)
+    created_date = models.DateTimeField("",default=timezone.now)
 
     def publish(self):
         self.published_date = timezone.now()
@@ -113,8 +113,8 @@ class Account(AbstractBaseUser):
         (admin, 'admin')
     )
 
-    email = models.EmailField(verbose_name='email address',max_length=60, unique=True)
-    username = models.CharField( max_length=50, unique=True)
+    email = models.EmailField(verbose_name='mail',max_length=60, unique=True)
+    username = models.CharField("nombre de usuario", max_length=50, unique=True)
     
     date_joined = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
     last_login = models.DateField(verbose_name='last login', auto_now=True)
@@ -149,11 +149,11 @@ class Account(AbstractBaseUser):
     
 #CreditCards
 class CreditCards(models.Model):
-    number = models.CharField(max_length=16, primary_key=True)
+    number = models.CharField(('numero'),max_length=16, primary_key=True)
     cod = models.IntegerField()
-    card_name = models.CharField(max_length=50)
-    date_expiration = models.DateField(auto_now=False, auto_now_add=False)
-    bank = models.CharField(max_length=50)
+    card_name = models.CharField("nombre de tarjeta",max_length=50)
+    date_expiration = models.DateField("fecha de vencimiento",auto_now=False, auto_now_add=False)
+    bank = models.CharField(('banco'),max_length=50)
     user = models.OneToOneField(Account, on_delete=models.CASCADE)
 
     def publish(self):
@@ -191,8 +191,8 @@ class Profile(models.Model):
 
 "-------Book-------"
 class Book(models.Model):
-    title = models.CharField( max_length=50)
-    description = models.TextField()
+    title = models.CharField(('titulo'), max_length=50)
+    description = models.TextField(('descripcion'))
     image= models.ImageField( upload_to='portadas_libros', height_field=None, width_field=None, max_length=None, blank=True, null=True)
     isbn = models.IntegerField(primary_key=True)
     author= models.ForeignKey(Author, on_delete=models.CASCADE)
@@ -230,7 +230,7 @@ class BookByChapter(models.Model):
 
 "-------Billboard-------"
 class Billboard(models.Model):
-    title = models.CharField( max_length=50, )
+    title = models.CharField("titulo", max_length=50, )
     description = models.TextField(blank=True, null=True)
     mostrar_en_home= models.BooleanField(default=False)
     author = models.ForeignKey(Account, on_delete=models.CASCADE)
@@ -249,7 +249,7 @@ class Billboard(models.Model):
 
 "-------Chapter-------"
 class Chapter(models.Model):
-    number = models.IntegerField(default=0)
+    number = models.IntegerField("numero",default=0)
     book= models.ForeignKey(BookByChapter, on_delete=models.CASCADE)
     url = models.URLField( max_length=200, blank=True, null=True)
 
@@ -274,8 +274,8 @@ class StateOfBook(models.Model):
         (finished, 'finished')
     )
 
-    date= models.DateField(default=timezone.now)
-    state = models.CharField( max_length=16, choices=AC_CHOICES, default=finished)
+    date= models.DateField("fecha",default=timezone.now)
+    state = models.CharField("estado", max_length=16, choices=AC_CHOICES, default=finished)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
@@ -293,8 +293,8 @@ class StateOfBook(models.Model):
 #Comment
 class Comment(models.Model):
 
-    is_a_spoiler = models.BooleanField(default=False)
-    description = models.TextField()
+    is_a_spoiler = models.BooleanField("es espoiler",default=False)
+    description = models.TextField("descripcion",)
     profile= models.ForeignKey(Profile, on_delete=models.CASCADE)
     publication = models.ForeignKey(Book, on_delete=models.CASCADE)    
 
@@ -309,7 +309,7 @@ class Comment(models.Model):
 #Like
 class Like(models.Model):
     
-    is_like = models.BooleanField(default = False)
+    is_like = models.BooleanField("me gusta",default = False)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     author = models.ForeignKey(Profile, on_delete=models.CASCADE)
     
@@ -328,7 +328,7 @@ class Like(models.Model):
 #LikeComment
 class LikeComment(models.Model):
     
-    is_like = models.BooleanField(default = False)
+    is_like = models.BooleanField("me gusta",default = False)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
     author = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
@@ -344,8 +344,8 @@ class LikeComment(models.Model):
 class ExpirationDates(models.Model):
 
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    expiration_normal= models.DateField(blank=True, null=True)
-    expiration_premium= models.DateField(blank=True, null=True)
+    expiration_normal= models.DateField("expiracion normal",blank=True, null=True)
+    expiration_premium= models.DateField("expiracion premium",blank=True, null=True)
 
     def publish(self):
         self.save()
@@ -358,8 +358,8 @@ class ExpirationDates(models.Model):
 class   UpDates(models.Model):
     
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    up_normal= models.DateField(blank=True, null=True)
-    up_premium= models.DateField(blank=True, null=True)
+    up_normal= models.DateField("pasar a normal",blank=True, null=True)
+    up_premium= models.DateField("pasar a premium",blank=True, null=True)
 
     def publish(self):
         self.save()
@@ -373,7 +373,7 @@ class   UpDates(models.Model):
 class ExpirationDatesBillboard(models.Model):
 
     publication = models.ForeignKey(Billboard, on_delete=models.CASCADE)
-    expiration_date= models.DateField(blank=True, null=True)
+    expiration_date= models.DateField("fecha de vencimiento",blank=True, null=True)
 
 
     def publish(self):
@@ -387,7 +387,7 @@ class ExpirationDatesBillboard(models.Model):
 class   UpDatesBillboard(models.Model):
     
     publication = models.ForeignKey(Billboard, on_delete=models.CASCADE)
-    up_date= models.DateField(blank=True, null=True)
+    up_date= models.DateField("actualizar",blank=True, null=True)
 
     def publish(self):
         self.save()
@@ -448,12 +448,11 @@ class UserSolicitud(models.Model):
 
 class CounterStates(models.Model):
 
-    publication = models.ForeignKey(Book, on_delete=models.CASCADE) 
-    date_start = models.DateField( )
-    date_start = models.DateField( )
-    cant_reading = models.IntegerField(default=0)
-    cant_future_read = models.IntegerField(default=0)
-    cant_finished = models.IntegerField(default=0)
+    publication = models.ForeignKey(Book, on_delete=models.CASCADE,related_name="publicacion")  #acá tuve que cambbiar el orden y usar la variable "nombre relacionado"
+    date_start = models.DateField("fecha de inicio")                                                            # por errores con este modelo chuzmear acá.
+    cant_reading = models.IntegerField("leyendo",default=0)
+    cant_future_read = models.IntegerField("en futuras lecturas",default=0)
+    cant_finished = models.IntegerField("terminados",default=0)
 
     
     def publish(self):
@@ -462,4 +461,6 @@ class CounterStates(models.Model):
     class Meta:
         verbose_name = "Estadística de libro"
         verbose_name_plural = "Estadísticas de libros"
+
+    
 
