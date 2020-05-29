@@ -1,9 +1,13 @@
 from django.urls import path, include
 from .views import *
+from django.conf.urls.static import static
+from django.conf import settings
+from django.contrib import admin
+from django.conf.urls import url
 
 urlpatterns = [
     path('', welcome, name='welcome'),
-    path('login/', login_propio, name='login'),
+    url('login/', login_propio, name='login'),
     path('logout/', logout, name='logout'),#no se para que son los names pero por las duda los dejo
     path('register_page/', register_page, name='registrar'),
     path('select_perfil/', select_perfil, name='seleccionarPerfil'),
@@ -14,4 +18,6 @@ urlpatterns = [
     path("publicacion/<titulo>/", publicacion, name="publicacion"),
     path("publicaciones/", publicaciones, name="publicaiones"),
     path('crear_perfil/', crear_perfil, name='crear_perfil'),
-]
+] 
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -50,7 +50,7 @@
     {% for libro in libros %}
        <li>
             <div>
-                <img src="{% static '{{libro.image.url}}' %}"  > 
+                <img  src="{{libro.image.url}}"  alt="fondo" >
                 <a href="/libro/{{libro.author}}">{{libro.title}}</a>
                 <!-- -->
                 <br> 
