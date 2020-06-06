@@ -51,7 +51,7 @@ class Gender(models.Model):
 
 #Editorial
 class Editorial(models.Model):
-    name= models.CharField("Nombre", max_length=50, unique=True)
+    name= models.CharField("Nombre", max_length=50, primary_key=True)
     description = models.TextField("descripcion",blank=True, null=True)
     mail = models.EmailField( max_length=254, blank=True, null=True)
     created_date = models.DateTimeField("",default=timezone.now)
@@ -90,13 +90,23 @@ class MyAccountManager(BaseUserManager):
         user.is_admin=True
         user.is_staff=True
         user.is_superuser=True
+        user.is_active=True
+        user.confirmo=True
         user.save(using=self.db)
         return user
 
     """ def get_by_natural_key(self, username):
        return self.get(username=username)"""
 
+#ConfirmationMail
+class ConfirmationMail(models.Model):
+    mail= models.EmailField( max_length=254, unique=True)
+    codigo = models.CharField( max_length=10)
+    tipo = models.IntegerField()
+    #tipo de mails de confirmacion: 1 para confirmar cuenta, 2 confirmar cambio de contraseña 
 
+    def publish(self):
+        self.save()
 
 #Account
 class Account(AbstractBaseUser):
@@ -120,6 +130,7 @@ class Account(AbstractBaseUser):
     last_login = models.DateField(verbose_name='last login', auto_now=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    confirmo= models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     plan = models.CharField( max_length=8, choices=AC_CHOICES, default=free)
@@ -175,8 +186,8 @@ class Profile(models.Model):
     hour_activation= models.DateTimeField( auto_now=False, auto_now_add=False, blank=True, null=True)
     pleasures_gender = models.ManyToManyField(Gender, blank=True, null=True)
     pleasures_author = models.ManyToManyField(Author, blank=True, null=True)
-    pleasures_editorial = models.ManyToManyField(Editorial,blank=True, null=True)
-    
+    pleasures_editorial = models.ManyToManyField(Editorial,blank=True, null=True, verbose_name="Editoriales Favoritas")
+
     date_of_creation = models.DateTimeField(default=timezone.now)
     
     def publish(self):
@@ -186,6 +197,7 @@ class Profile(models.Model):
         return self.name  
     
     class Meta:
+        unique_together = ('name', 'account',)
         verbose_name = "Perfil"
         verbose_name_plural = "Perfiles"
 

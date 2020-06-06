@@ -7,7 +7,7 @@ from django.contrib.auth import logout as do_logout
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_protect
-from .forms import RegistrationForm, RegistroTarjeta, CrearPerfil, MailChange
+from .forms import RegistrationForm, RegistroTarjeta, CrearPerfil, MailChange, MailConfirmacion
 from .models import *
 from django.contrib.auth.forms import UserCreationForm
 from django import shortcuts
@@ -16,6 +16,20 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 
+from ing2.settings import EMAIL_HOST_USER
+from django.core.mail import send_mail
+from django.conf import settings
+
+from django.utils.crypto import get_random_string
+
+#codigo de mail
+#do_login(request, user)
+#                send_mail('Subject here', 'Here is the message.', settings.EMAIL_HOST_USER,
+#         ['completar@gmail.com'])
+
+def randomCod():
+    unique_id = get_random_string(length=10)
+    return unique_id
 
 
 def register_page(request):
@@ -32,17 +46,21 @@ def register_page(request):
             id_account= form.cleaned_data.get('id')
             email= form.cleaned_data.get('email')
             raw_password= form.cleaned_data.get('password1')
-            account = authenticate(email=email, password=raw_password)
+            #account = authenticate(email=email, password=raw_password)
             
             instancia_tarjeta= formCard.save(commit=False)
             instancia_tarjeta.user = cuenta          
             instancia_tarjeta.save()
             
-            #perfil = formPerfil.save(commit=False)
-            #perfil.account = cuenta
-            #perfil.save()
+            #enviar mail confirmacion
+            cod = randomCod()
+            send_mail('Aquí tiene su codigo de confirmacion', cod, settings.EMAIL_HOST_USER,[email])
 
-            return redirect('/login')
+            confir= ConfirmationMail(mail=email, codigo=cod, tipo=1 )
+            confir.save()
+            request.session['emailConfirm']= email
+            request.session.modified = True
+            return redirect('/confirmarCuenta')
         else:
             context["user_creation_form"]=form
             context["creacion_tarjeta"]= formCard
@@ -55,6 +73,33 @@ def register_page(request):
         context["creacion_tarjeta"]=formCard
         context["profile_creation_form"]=formPerfil
     return render(request, 'bookflix/register_page.html', context)
+
+
+def confirmarCuenta(request):
+    context={}
+    if request.POST :
+        form= MailConfirmacion(request.POST, )
+        em= request.session['emailConfirm']
+        confirmations= ConfirmationMail.objects.get( mail = em)
+        
+        if  form.is_valid():
+            codEntrado = form.cleaned_data.get("codigoV")
+            if confirmations.codigo == codEntrado:
+                
+                usuario=  Account.objects.get(email = em)
+                usuario.confirmo = True
+                usuario.save()
+                send_mail('Registro Confirmado', 'bienvenido a la familia', settings.EMAIL_HOST_USER,[usuario.email])
+
+  
+                return redirect('/login')
+            else:
+                messages.error(request, 'codigo erroneo')
+    else:
+        form= MailConfirmacion()
+    context["confirmacion"]= form 
+    return render(request, "bookflix/confirmacion.html", context)
+
 
 def welcome(request):
     publicacion=Billboard.objects.filter(mostrar_en_home=True)
@@ -101,16 +146,17 @@ def login_propio(request):
             password = form.cleaned_data['password']
 
             # Verificamos las credenciales del usuario
-            user = authenticate(username=username, password=password)
+            user = authenticate(username=username, password=password,)
 
             # Si existe un usuario con ese nombre y contraseña
             if user is not None:
-                # Hacemos el login manualmente
-                do_login(request, user)
-            
-                # Y le redireccionamos a la portada
-                return redirect('/select_perfil')
-
+                # Hacemos el login manualmente  Y le redireccionamos a la portada
+                if user.confirmo:
+                    do_login(request, user)
+                    return redirect('/select_perfil')
+                request.session['emailConfirm']= user.email
+                request.session.modified = True
+                return redirect('/confirmarCuenta')
     # Si llegamos al final renderizamos el formulario
     publicacion=Billboard.objects.filter(mostrar_en_home=True)
     libros = Book.objects.filter(mostrar_en_home=True)
@@ -138,7 +184,7 @@ def cambiar_contrasenia(request):
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Su Contrasenia fue cambiada con exito')
-            return redirect('cambiar_contrasenia')
+            return redirect('/perfil')
         else:
             messages.error(request, 'Corrija el error')
     else:
@@ -158,6 +204,8 @@ def cambiar_tarjeta(request):
             tarjeta.user= request.user
             tarjeta.save()
             return redirect('/perfil')      
+        else:
+            messages.error(request, 'error tarjeta')
     else:
         form=RegistroTarjeta()
     return render(request, "bookflix/cambiar_tarjeta.html", {'form': form})
@@ -169,6 +217,8 @@ def cambiar_email(request):
         if form.is_valid():
             form.save()
             return redirect('/perfil')
+        else:
+            messages.error(request, 'mail en uso')
     else:
         form= MailChange(
             initial={

@@ -1,21 +1,21 @@
 <html>
     
     <body>
-        {% include "bookflix/barra.html" %}
-        <h2>Cambiar email </h2>
+        
+        <h2>Ingresar Codigo </h2>
         <form method="post">
             
             {% csrf_token %}
-            {%for field in cambio_mail %}
+            {%for field in confirmacion %}
                 {{field.label_tag}}
                 {{field}}
             {% endfor %}
 
-            {%for error in cambio_mail.errors %}
+            {%for error in confirmacion.errors %}
                 <p style="color: black", > {{error}} </p>
             {% endfor %}
             
-            {% if cambio_mail.non_field_errors %}
+            {% if confirmacion.non_field_errors %}
                 <div style="color:yellow">
                     <p>{{cambio_mail.non_field_errors}} </p>
                 </div>

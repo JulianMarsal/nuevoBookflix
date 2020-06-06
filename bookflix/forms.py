@@ -1,12 +1,16 @@
 from django import forms
-from .models import Account, CreditCards, Profile
+from .models import Account, CreditCards, Profile, ConfirmationMail
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
 from django.forms import ValidationError
 
-class RegistroTarjeta(ModelForm):
+class MailConfirmacion(forms.Form):
+    codigoV = forms.CharField(label='codigo Validacion')
 
+
+class RegistroTarjeta(ModelForm):
+  
     class Meta:
         model = CreditCards
 

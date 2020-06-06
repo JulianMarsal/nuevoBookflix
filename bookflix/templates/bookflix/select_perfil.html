@@ -1,8 +1,10 @@
+
+
 <html>
     {# todo esto se puede implementar con un "select option" por lo visto #}
 
 <body>
-    {% if request.user.is_active %}
+    
         {% include "bookflix/barra.html" %}
         <h1 style="color: black; margin: 10;">
         {% if request.user.plan == "free" %}
@@ -58,11 +60,6 @@
         
         {% endif %}
  
-        
-    {% else %}       
-        <hr>   
-        <h1>Área solo para usuarios logueados</h1>
-    {% endif %}
 
 </body>
 
