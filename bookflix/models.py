@@ -456,7 +456,6 @@ class CounterStates(models.Model):
     cant_reading = models.IntegerField("leyendo",default=0)
     cant_future_read = models.IntegerField("en futuras lecturas",default=0)
     cant_finished = models.IntegerField("terminados",default=0)
-
     
     def publish(self):
         self.save()
